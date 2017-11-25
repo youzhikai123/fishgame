@@ -1,94 +1,75 @@
 #include "GameScene.h"
-
+#include "CannonLayer.h"
 
 GameScene::GameScene()
 {
 }
 
-
-GameScene::~GameScene()
-{
-}
 bool GameScene::init()
 {
-	/*do  {...}while(0)±¾ÉíÃ»ÓÐÊµ¼ÊÒâÒå£¬µ«ÓÐºÜ¶àºÃ´¦£º
-	1¡¢¸¨Öú¶¨Òå¸´ÔÓµÄºê£¬±ÜÃâÒýÓÃÊ±³ö´í£¨ÔÚÒýÓÃºêÊ±Ö»ÊÇµ¥µ¥¼Ó{}»°ÓÐ¿ÉÄÜ»á±àÒë²»¹ý£©
-	2¡¢±ÜÃâÊ¹ÓÃgoto¶Ô³ÌÐòÁ÷½øÐÐÍ³Ò»µÄ¿ØÖÆ£¬£¨goto ±êÇ©£º£©ÔËÐÐµ½gotoÊ±»áÌø¹ýÖÐ¼äµÄ²Ù×÷
-		µ½±êÇ©£ººóµÄ²Ù×÷£¬½øÐÐÌø¹ýÒ»Ð©³ÌÐò£»µ«goto²»·ûºÏÈí¼þ¹¤³Ì½á¹¹¾¡Á¿²»ÓÃ£¬do{..}while(0)
-		Í¨¹ýbreak¿ÉÒÔÌø³ö£¬ÊµÏÖ¡£
-	3¡¢±ÜÃâ¿ÕºêÒýÆðµÄwarning
-		ÄÚºËÖÐÓÉÓÚ²»Í¬¼Ü¹¹µÄÏÞÖÆ£¬ºÜ¶àÊ±ºò»áÓÃµ½¿Õºê£¬ÔÚ±àÒëµÄÊ±ºò£¬¿Õºê»á¸ø³öwarning£¬ÎªÁË±ÜÃâ
-		ÕâÑùµÄwarning£¬¾Í¿ÉÒÔÊ¹ÓÃdo{}while(0)À´¶¨Òå¿Õºê
-	4¡¢¶¨ÒåÒ»¸öµ¥¶ÀµÄº¯Êý¿éÀ´ÊµÏÖ¸´ÔÓµÄ²Ù×÷£º
-		µ±ÄãµÄ¹¦ÄÜºÜ¸´ÔÓ£¬±äÁ¿ºÜ¶àÄãÓÖ²»Ô¸ÒâÔö¼ÓÒ»¸öº¯ÊýµÄÊ±ºò£¬Ê¹ÓÃdo{}while(0);£¬½«ÄãµÄ´úÂë
-		Ð´ÔÚÀïÃæ£¬ÀïÃæ¿ÉÒÔ¶¨Òå±äÁ¿¶ø²»ÓÃ¿¼ÂÇ±äÁ¿Ãû»áÍ¬º¯ÊýÖ®Ç°»òÕßÖ®ºóµÄÖØ¸´¡£
-	*/
 	do
 	{
-		if (!CCScene::init())
-		{
-			break;
-		}
-		/*´´½¨±³¾°²ã*/
+		CC_BREAK_IF(!CCScene::init());
 		preloadResources();
-		backgroundLayer = BackgroundLayer::create();
-		CC_BREAK_IF(!backgroundLayer);
-		this->addChild(backgroundLayer);
-		
-
-		fishLayer = FishLayer::create();
-		CC_BREAK_IF(!fishLayer);
-		this->addChild(fishLayer);
-		
-
-		menuLayer = MenuLayer::create();
-		CC_BREAK_IF(!menuLayer);
-		CC_SAFE_RETAIN(menuLayer);
+		//å› ä¸º~GameScene()ä¸­éœ€è¦CC_SAFE_RELEASE(_menuLayer)ï¼Œ å¦‚æžœå…¶å®ƒå±‚åˆ›å»ºå¤±è´¥ï¼Œ_menuLayerå°†ä¸åˆ›å»ºï¼Œ
+		//æ‰€ä»¥_menuLayerè¦å…ˆäºŽå…¶ä»–å±‚åˆ›å»ºï¼Œ å¦åˆ™å°†æŠ¥ "reference count greater than 0" é”™è¯¯
+		_menuLayer = MenuLayer::create(); 
+		CC_BREAK_IF(!_menuLayer);
+		CC_SAFE_RETAIN(_menuLayer); 
+		_backgroundLayer = BackgroundLayer::create();
+		CC_BREAK_IF(!_backgroundLayer);
+		addChild(_backgroundLayer);
+		_fishLayer = FishLayer::create();
+		CC_BREAK_IF(!_fishLayer);
+		addChild(_fishLayer);
+		CannonLayer* cannonLayer = CannonLayer::create();
+		addChild(cannonLayer);
 		return true;
-
-	}
-	while (0);
+	} while (0);
 	return false;
 }
 
-
-
 void GameScene::preloadResources(void)
 {
-	/*CCSpriteFrameCacheµÄ¶ÔÏó´ÓplistÎÄ¼þÖÐµ¼Èë¾«ÁéÖ¡*/
-	CCSpriteFrameCache *spriteFrameCache = CCSpriteFrameCache::sharedSpriteFrameCache();
-	spriteFrameCache->addSpriteFramesWithFile("FishActor-Large-ipadhd.plist");
-	spriteFrameCache->addSpriteFramesWithFile("FishActor-Marlin-ipadhd.plist");
-	spriteFrameCache->addSpriteFramesWithFile("FishActor-Shark-ipadhd.plist");
-	spriteFrameCache->addSpriteFramesWithFile("FishActor-Small-ipadhd.plist");
-	spriteFrameCache->addSpriteFramesWithFile("FishActor-Mid-ipadhd.plist");
+	CCSpriteFrameCache* spriteFrameCache = CCSpriteFrameCache::sharedSpriteFrameCache();
+	//ä¿®æ”¹ä»¥ä¸‹plistæ–‡ä»¶ï¼Œ åˆ é™¤keyä¸­çš„ä¸­æ–‡ï¼Œ å¦åˆ™spriteFrameByNameå‡½æ•°æ— æ³•æ‰¾åˆ°Frameï¼Œå°†è¿”å›žNULL
+	spriteFrameCache->addSpriteFramesWithFile("FishActor-Large-ipadhd.plist");		//ä¿®æ”¹metadata->realTextureFileName->FishActor-Large-ipadhdhd.png, textureFileName->FishActor-Large-ipadhd.png
+	spriteFrameCache->addSpriteFramesWithFile("FishActor-Marlin-ipadhd.plist");		//ä¿®æ”¹metadata->realTextureFileName->FishActor-Marlin-ipadhdhd.png, textureFileName->FishActor-Marlin-ipadhd.png
+	spriteFrameCache->addSpriteFramesWithFile("FishActor-Shark-ipadhd.plist");		//åŒä¸Š
+	spriteFrameCache->addSpriteFramesWithFile("FishActor-Small-ipadhd.plist");		//åŒä¸Š
+	spriteFrameCache->addSpriteFramesWithFile("FishActor-Mid-ipadhd.plist");			//åŒä¸Š
+	spriteFrameCache->addSpriteFramesWithFile("cannon-ipadhd.plist");
+	spriteFrameCache->addSpriteFramesWithFile("Item-chaojiwuqi-ipadhd.plist");
 
+	CCTextureCache *textureCache = CCTextureCache::sharedTextureCache();
+	textureCache->addImage("ui_button_63-ipadhd.png");
+	textureCache->addImage("ui_button_65-ipadhd.png");
 
-	/*×Ö·û´®Êý×é´æÓã*/
-	char a[][50] = { "SmallFish","Croaker","AngelFish","Amphiprion","PufferS","Bream","Porgy","Chelonian",
-	"Lantern","Ray","Shark","GoldenTrout","GShark","GMarlinsFish","GrouperFish","JadePerch","MarlinsFish","PufferB" };
-
+	char str[][50] = { "SmallFish", "Croaker", "AngelFish", "Amphiprion", "PufferS", 
+		"Bream", "Porgy", "Chelonian", "Lantern", "Ray", "Shark", "GoldenTrout", "GShark", 
+		"GMarlinsFish", "GrouperFish", "JadePerch", "MarlinsFish", "PufferB" };
 	for (int i = 0; i < 18; i++)
 	{
-		CCArray *array = CCArray::createWithCapacity(10);
+		CCArray* array = CCArray::createWithCapacity(10);
 		for (int j = 0; j < 10; j++)
 		{
-			CCString  *spriteFrameName = CCString::createWithFormat("%s_actor_%03d.png",a[i],j+1);
-			CCSpriteFrame *spriteFrame = spriteFrameCache->spriteFrameByName(spriteFrameName->getCString());
-			if (spriteFrame == NULL)
-			{
-				break;
-			}
+			CCString* spriteFrameName = CCString::createWithFormat("%s_actor_%03d.png", str[i], j + 1);
+			CCSpriteFrame* spriteFrame = spriteFrameCache->spriteFrameByName(spriteFrameName->getCString());
+			CC_BREAK_IF(!spriteFrame);
 			array->addObject(spriteFrame);
 		}
 		if (array->count() == 0)
 		{
 			continue;
 		}
-		CCAnimation *animation = CCAnimation::createWithSpriteFrames(array,0.15f);
-		CCString *animationName = CCString::createWithFormat("fish_animation_%02d",i+1);
-		CCAnimationCache::sharedAnimationCache()->addAnimation(animation,animationName->getCString());
-
+		CCAnimation* animation = CCAnimation::createWithSpriteFrames(array, 0.15f);
+		CCString* animationName = CCString::createWithFormat("fish_animation_%02d", i + 1);
+		CCAnimationCache::sharedAnimationCache()->addAnimation(animation, animationName->getCString());
 	}
+	
+}
 
+GameScene::~GameScene()
+{
+	CC_SAFE_RELEASE(_menuLayer);
 }
