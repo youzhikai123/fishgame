@@ -1,5 +1,5 @@
 #include "GameMenuLayer.h"
-
+#include "GameScene.h"
 GameMenuLayer::GameMenuLayer(void)
 {
 }
@@ -81,7 +81,7 @@ void GameMenuLayer::createMenu(void)
 	CCMenu* menu = CCMenu::create(startMenuItem, sceneMenuItem, NULL);
 	this->addChild(menu);
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-	menu->setPosition(ccp(winSize.width / 2, winSize.height * 0.2));
+	menu->setPosition(ccp(winSize.width / 2, winSize.height * 0.4));
 	menu->alignItemsVerticallyWithPadding(50);
 }
 
@@ -92,7 +92,8 @@ void GameMenuLayer::menuCallbackSelectScene(CCObject* sender)
 
 void GameMenuLayer::menuCallbackStartGame(CCObject* sender)
 {
-
+	GameScene *gameScence=GameScene::create();
+	CCDirector::sharedDirector()->replaceScene(gameScence);
 }
 
 GameMenuLayer::~GameMenuLayer()

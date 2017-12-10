@@ -80,3 +80,25 @@ float Cannon::getFireRange()
 	double result = sqrt(temp);
 	return result/7*(_type+1);
 }
+
+void Cannon::aimAt(CCPoint target)
+{
+	CCPoint location = getParent()->convertToWorldSpace(getPosition());
+	float angle = ccpAngleSigned(ccpSub(target, location), CCPointMake(0, 1));
+
+	float degrees = CC_RADIANS_TO_DEGREES(angle);
+	if(fabs(degrees) > 60)
+	{
+		degrees = degrees > 0 ? 60 : -60;
+	}
+	/* CC_RADIANS_TO_DEGREES(angle)
+				0
+				|
+				|
+	  -90 -------------- 90
+				|
+				|
+			   180
+	*/
+	this->setRotation(degrees);
+}
