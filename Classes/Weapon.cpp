@@ -1,6 +1,6 @@
 #include "Weapon.h"
 
-#define BULLET_COUNT 1
+#define BULLET_COUNT 10
 
 Weapon* Weapon::create(CannonType type)
 {
@@ -75,6 +75,7 @@ CannonType Weapon::getCannonType()
 
 void Weapon::changeCannon(CannonOperate operate)
 {
+	PersonalAudioEngine::getInstance()->playEffect(kEffectSwichCannon);
 	int type = (int) _cannon->getType();
 	type += operate;
 	_cannon->setType((CannonType)type);

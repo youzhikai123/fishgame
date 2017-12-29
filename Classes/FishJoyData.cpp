@@ -19,19 +19,19 @@ FishJoyData::~FishJoyData(void)
 {
 }
 
-FishJoyData* FishJoyData::sharedFishJoyData()
+FishJoyData* FishJoyData::getInstance()
 {
-	if(NULL == _sharedFishJoyData)
+	if(NULL == _sharedFishJoyData )
 	{
-		_sharedFishJoyData = new FishJoyData();
-		_sharedFishJoyData -> init();
+		_sharedFishJoyData  = new FishJoyData();
+		_sharedFishJoyData  -> init();
 	}
-	return _sharedFishJoyData;
+	return _sharedFishJoyData ;
 }
 
 void FishJoyData::destoryInstance()
 {
-	CC_SAFE_DELETE(_sharedFishJoyData);
+	CC_SAFE_DELETE(_sharedFishJoyData );
 }
 
 bool FishJoyData::init()
@@ -72,10 +72,10 @@ void FishJoyData::flush()
 	userDefault -> flush();
 }
 
-void FishJoyData::alterGold(int golds)
+void FishJoyData::alterGold(int detal /*golds*/)
 {
 	int num = getGold();
-	num += golds;
+	num += detal;
 	setGold(num);
 	flush();
 }

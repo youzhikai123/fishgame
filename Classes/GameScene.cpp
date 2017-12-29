@@ -1,5 +1,5 @@
 #include "GameScene.h"
-
+//#include "FishJoyData.h"
 GameScene::GameScene()
 {
 }
@@ -30,7 +30,7 @@ bool GameScene::init()
 		_paneLayer = PanelLayer::create();
 		CC_BREAK_IF(!_paneLayer);
 		this->addChild(_paneLayer);
-		_paneLayer->getGoldCounter()->setNumber(FishJoyData::sharedFishJoyData()->getGold());
+		_paneLayer->getGoldCounter()->setNumber(FishJoyData::getInstance()->getGold());
 		this->scheduleUpdate();
 		return true;
 	} while (0);
@@ -39,6 +39,7 @@ bool GameScene::init()
 
 void GameScene::preloadResources(void)
 {
+	PersonalAudioEngine::getInstance();
 	CCSpriteFrameCache* spriteFrameCache = CCSpriteFrameCache::sharedSpriteFrameCache();
 	//修改以下plist文件， 删除key中的中文， 否则spriteFrameByName函数无法找到Frame，将返回NULL
 	spriteFrameCache->addSpriteFramesWithFile("FishActor-Large-ipadhd.plist");		//修改metadata->realTextureFileName->FishActor-Large-ipadhdhd.png, textureFileName->FishActor-Large-ipadhd.png
@@ -89,12 +90,13 @@ void GameScene::cannonAimAt(CCPoint target)
 
 void GameScene::cannonShootTo(CCPoint target)
 {
-	int cost=_cannonLayer->getWeapon()->getCannonType()+1;
-	if (FishJoyData::sharedFishJoyData()->getGold()>=cost)
+	int cost = _cannonLayer->getWeapon()->getCannonType() + 1;
+	if (FishJoyData::getInstance()->getGold() >= cost)
 	{
 		_cannonLayer->shootTo(target);
 		alterGold(-cost);
 	}
+
 	//_cannonLayer->shootTo(target);
 }
 
@@ -141,12 +143,18 @@ void GameScene::fishWillBeCaught(Fish* fish)
 {
 	float weaponPercents[k_Cannon_Count] = { 0.3, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1 };
 	float fishPercents[	k_Fish_Type_Count] = { 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4 };
-	int cannonType = _cannonLayer->getWeapon()->getCannonType();
-	int fishType = fish->getType();
-	if(CCRANDOM_0_1() < 1.1)
+	int _cannonType = _cannonLayer->getWeapon()->getCannonType();
+	int _fishType = fish->getType();
+	float percentage =(float)_cannonType * _fishType;
+	if(CCRANDOM_0_1() < percentage)//1.1
 	{
 		fish->beCaught();
+		//
+		int reward = STATIC_DATA_INT(CCString::createWithFormat(STATIC_DATA_STRING("reward_format"),_fishType)->getCString());
+		alterGold(reward);
+		//
 	}
+	
 }
 
 void GameScene::checkOutCollisionBetweenFishesAndFishingNet(Bullet* bullet)
@@ -166,7 +174,12 @@ void GameScene::checkOutCollisionBetweenFishesAndFishingNet(Bullet* bullet)
 }
 void GameScene::alterGold(int delta)
 {
-	FishJoyData *fishJoyData=FishJoyData::sharedFishJoyData();
-	fishJoyData->alterGold(delta);
-	_paneLayer->getGoldCounter()->setNumber(fishJoyData->getGold());
+	FishJoyData* _fishJoyData = FishJoyData::getInstance();
+	_fishJoyData->alterGold(delta);
+	_paneLayer->getGoldCounter()->setNumber(_fishJoyData->getGold());
+}
+void GameScene::onEnter()
+{
+	CCScene::onEnter();
+	PersonalAudioEngine::getInstance()->playBackgroundMusic(3);
 }

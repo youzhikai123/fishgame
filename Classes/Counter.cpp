@@ -4,7 +4,7 @@ enum{
 };
 Counter* Counter::create(CCArray* presenters, int digit/* = 0 */)
 {
-	CCAssert(digit>=0 && digit<=10,"金币数字只能为0至9之间的数字");
+	CCAssert(digit>=0 && digit<=10,"金币数字只能为0至9之间的数字.");
     Counter *counter = new Counter;
 	if (counter && counter->init(presenters,digit) )
 	{   
@@ -24,7 +24,7 @@ bool Counter::init(CCArray* presenters, int digit/* = 0 */)
 	{
 		return false;
 	}
-    _presenters = CCNode::create();
+	_presenters = CCNode::create();
 	
 	CCObject *obj = NULL;
 	int i = 0;
@@ -62,9 +62,7 @@ void Counter::animation()
 }
 void Counter::visit()
 {
-	
     glEnable(GL_SCISSOR_TEST);
-  
     CCSize size = ((CCNode *)_presenters->getChildByTag(_digit))->getContentSize();
     CCPoint position = getParent()->convertToWorldSpace(getPosition());
     glScissor((position.x - size.width / 2) * 0.4, (position.y - size.height / 2) * 0.4, size.width* 0.4, size.height* 0.4);
